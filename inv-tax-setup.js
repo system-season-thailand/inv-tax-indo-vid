@@ -986,7 +986,7 @@ const importMultipleSelectedInvCompIndoObjects = () => {
                         <p>${cityList}</p>
                     </div>
                     <div style="border-right: 0.5px solid black;">
-                        <p class="red_text_color_class">000</p>
+                        <p class="inv_rest_payment_or_deposit_number_p_class red_text_color_class">000</p>
                     </div>
                 </div>
             `;
@@ -1006,12 +1006,53 @@ const importMultipleSelectedInvCompIndoObjects = () => {
             </div>
             <div id="inv_tax_total_price_div_id" style="border-right: 0.5px solid black;">
                 <p style="padding: 5px 0">
-                    SAR&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;000
+                    SAR&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="aotumaticTotalPriceSpan">0</span>
                 </p>
             </div>
         </div>
     `;
     mainTableDiv.innerHTML += totalRow;
+
+    // Function to update the total price
+    function updateAutomaticTotalPrice() {
+        const numberElements = document.querySelectorAll('.inv_rest_payment_or_deposit_number_p_class');
+        let total = 0;
+        numberElements.forEach(el => {
+            const value = parseFloat(el.innerText.replace(/,/g, '').replace(/\s/g, ''));
+            if (!isNaN(value)) {
+                total += value;
+            }
+        });
+
+        // Tax calculation
+        let tax = 0;
+        if (total > 7000) {
+            tax = 50;
+        } else if (total >= 4000 && total <= 7000) {
+            tax = 40;
+        } else {
+            tax = 25;
+        }
+
+        let totalWithTax = total - tax;
+        if (totalWithTax < 0) {
+            totalWithTax = 0;
+        }
+
+        const totalSpan = document.getElementById('aotumaticTotalPriceSpan');
+        if (totalSpan) {
+            totalSpan.textContent = totalWithTax;
+        }
+    }
+
+    // Attach event listeners to all editable number elements
+    const numberElements = document.querySelectorAll('.inv_rest_payment_or_deposit_number_p_class');
+    numberElements.forEach(el => {
+        el.addEventListener('input', updateAutomaticTotalPrice);
+    });
+
+    // Initial calculation
+    updateAutomaticTotalPrice();
 
     // Optionally, re-apply editable and floating options functionality if needed
     if (typeof makeDivContentEditable === 'function') makeDivContentEditable();
