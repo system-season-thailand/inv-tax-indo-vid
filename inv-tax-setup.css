@@ -505,10 +505,11 @@ body {
 
 
 #import_saved_inv_comp_from_database_id {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1000;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
 }
 
 #import_saved_inv_comp_from_database_id button {
@@ -516,10 +517,9 @@ body {
     color: white;
     font-size: 1.1rem;
     font-weight: bold;
-    padding: 30px 12px;
+    padding: 50px 20px;
     border: none;
-    border-top-right-radius: 30px;
-    border-bottom-right-radius: 30px;
+    border-radius: 30px;
     cursor: pointer;
     letter-spacing: 1px;
     transition: background 0.3s ease, transform 0.2s ease;
