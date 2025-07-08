@@ -1013,14 +1013,28 @@ const importMultipleSelectedInvCompIndoObjects = () => {
     `;
     mainTableDiv.innerHTML += totalRow;
 
+    // Ensure all .inv_rest_payment_or_deposit_number_p_class elements have '000' as initial value
+    document.querySelectorAll('.inv_rest_payment_or_deposit_number_p_class').forEach(el => {
+        el.innerText = '000';
+    });
+
     // Function to update the total price
     function updateAutomaticTotalPrice() {
         const numberElements = document.querySelectorAll('.inv_rest_payment_or_deposit_number_p_class');
         let total = 0;
         numberElements.forEach(el => {
-            const value = parseFloat(el.innerText.replace(/,/g, '').replace(/\s/g, ''));
+            // Remove commas and spaces, parse as float
+            let value = parseFloat(el.innerText.replace(/,/g, '').replace(/\s/g, ''));
             if (!isNaN(value)) {
                 total += value;
+                // Format the number with commas and update the element's innerText
+                if (value === 0) {
+                    el.innerText = '000';
+                } else {
+                    el.innerText = value.toLocaleString();
+                }
+            } else {
+                el.innerText = '000';
             }
         });
 
@@ -1041,7 +1055,7 @@ const importMultipleSelectedInvCompIndoObjects = () => {
 
         const totalSpan = document.getElementById('aotumaticTotalPriceSpan');
         if (totalSpan) {
-            totalSpan.textContent = totalWithTax;
+            totalSpan.textContent = totalWithTax === 0 ? '000' : totalWithTax.toLocaleString();
         }
     }
 
