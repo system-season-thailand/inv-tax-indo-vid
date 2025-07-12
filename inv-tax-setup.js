@@ -1108,6 +1108,7 @@ setTimeout(() => {
 function setupDragAndDrop() {
     const container = document.getElementById('invoice_company_main_table_div_id');
     const rows = container.querySelectorAll('.invoice_company_row_div_class');
+    let draggedElement = null;
 
     rows.forEach(row => {
         const firstDiv = row.querySelector('div:first-child');
@@ -1116,30 +1117,35 @@ function setupDragAndDrop() {
             firstDiv.style.cursor = 'grab';
 
             firstDiv.addEventListener('dragstart', (e) => {
-                e.dataTransfer.setData('text/plain', row.outerHTML);
+                draggedElement = row;
+                e.dataTransfer.effectAllowed = 'move';
                 row.style.opacity = '0.5';
-                row.style.transform = 'rotate(2deg)';
             });
 
             firstDiv.addEventListener('dragend', (e) => {
                 row.style.opacity = '1';
-                row.style.transform = 'rotate(0deg)';
+                draggedElement = null;
             });
         }
     });
 
     container.addEventListener('dragover', (e) => {
         e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
         const dragoverRow = e.target.closest('.invoice_company_row_div_class');
-        if (dragoverRow) {
+        if (dragoverRow && draggedElement !== dragoverRow) {
             const rect = dragoverRow.getBoundingClientRect();
             const midpoint = rect.top + rect.height / 2;
 
+            // Clear all previous indicators
+            container.querySelectorAll('.invoice_company_row_div_class').forEach(row => {
+                row.style.borderTop = '';
+                row.style.borderBottom = '';
+            });
+
             if (e.clientY < midpoint) {
                 dragoverRow.style.borderTop = '2px solid #4fc3f7';
-                dragoverRow.style.borderBottom = '';
             } else {
-                dragoverRow.style.borderTop = '';
                 dragoverRow.style.borderBottom = '2px solid #4fc3f7';
             }
         }
@@ -1155,24 +1161,17 @@ function setupDragAndDrop() {
 
     container.addEventListener('drop', (e) => {
         e.preventDefault();
-        const draggedHTML = e.dataTransfer.getData('text/plain');
-        const draggedRow = e.target.closest('.invoice_company_row_div_class');
+        const dropTarget = e.target.closest('.invoice_company_row_div_class');
 
-        if (draggedRow && draggedHTML) {
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = draggedHTML;
-            const newRow = tempDiv.firstElementChild;
-
-            const rect = draggedRow.getBoundingClientRect();
+        if (draggedElement && dropTarget && draggedElement !== dropTarget) {
+            const rect = dropTarget.getBoundingClientRect();
             const midpoint = rect.top + rect.height / 2;
 
             if (e.clientY < midpoint) {
-                draggedRow.parentNode.insertBefore(newRow, draggedRow);
+                dropTarget.parentNode.insertBefore(draggedElement, dropTarget);
             } else {
-                draggedRow.parentNode.insertBefore(newRow, draggedRow.nextSibling);
+                dropTarget.parentNode.insertBefore(draggedElement, dropTarget.nextSibling);
             }
-
-            draggedRow.remove();
 
             // Clear border indicators
             const rows = container.querySelectorAll('.invoice_company_row_div_class');
@@ -1187,6 +1186,9 @@ function setupDragAndDrop() {
             // Re-apply editable functionality
             if (typeof makeDivContentEditable === 'function') makeDivContentEditable();
             if (typeof setupDuplicateOptions === 'function') setupDuplicateOptions("duplicate_this_element_class", "invoice_company_row_div_class");
+
+            // Recalculate total after reordering
+            if (typeof updateAutomaticTotalPrice === 'function') updateAutomaticTotalPrice();
         }
     });
 }
