@@ -980,7 +980,7 @@ const importMultipleSelectedInvCompIndoObjects = () => {
                         <p>${period}</p>
                     </div>
                     <div>
-                        <p>${guestName}</p>
+                        <p class="duplicate_this_element_class">${guestName}</p>
                     </div>
                     <div>
                         <p>${cityList}</p>
