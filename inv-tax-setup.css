@@ -224,7 +224,7 @@ body {
     font-size: 1.5rem;
 }
 
-.invoice_tax_number_div_class{
+.invoice_tax_number_div_class {
     display: flex;
 }
 
@@ -283,15 +283,19 @@ body {
 .invoice_company_row_div_class div:nth-child(1) {
     flex-grow: 0.4;
 }
+
 .invoice_company_row_div_class div:nth-child(2) {
     flex-grow: 0.5;
 }
+
 .invoice_company_row_div_class div:nth-child(3) {
     flex-grow: 1;
 }
+
 .invoice_company_row_div_class div:nth-child(4) {
     flex-grow: 0.5;
 }
+
 .invoice_company_row_div_class div:nth-child(5) {
     flex-grow: 0.4;
 }
@@ -304,7 +308,7 @@ body {
 }
 
 
-.last_invoice_company_row_div_class div:nth-child(2){
+.last_invoice_company_row_div_class div:nth-child(2) {
     flex-grow: 0.322;
 }
 
@@ -670,7 +674,7 @@ body {
     /* Brighter pop on hover */
 }
 
-.google_sheet_dropdown_div_class{
+.google_sheet_dropdown_div_class {
     z-index: 99999;
 }
 
@@ -692,7 +696,7 @@ body {
     color: white;
 }
 
-#import_supabase_inv_comp_indo_data_names_dropdown p{
+#import_supabase_inv_comp_indo_data_names_dropdown p {
     background: white;
     color: black;
     font-size: 1.5rem;
@@ -700,6 +704,6 @@ body {
     padding: 5px 25px;
 }
 
-#import_supabase_inv_comp_indo_data_names_dropdown p:hover{
+#import_supabase_inv_comp_indo_data_names_dropdown p:hover {
     background: #e3f2fd;
 }

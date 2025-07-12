@@ -1072,8 +1072,8 @@ const importMultipleSelectedInvCompIndoObjects = () => {
     if (typeof makeDivContentEditable === 'function') makeDivContentEditable();
     if (typeof setupDuplicateOptions === 'function') setupDuplicateOptions("duplicate_this_element_class", "invoice_company_row_div_class");
 
-
-
+    // Setup drag and drop functionality
+    setupDragAndDrop();
 
 
 
@@ -1103,3 +1103,90 @@ const importMultipleSelectedInvCompIndoObjects = () => {
 setTimeout(() => {
     inv_comp_indo_loadAllData();
 }, 500);
+
+// Drag and Drop functionality for invoice rows
+function setupDragAndDrop() {
+    const container = document.getElementById('invoice_company_main_table_div_id');
+    const rows = container.querySelectorAll('.invoice_company_row_div_class');
+
+    rows.forEach(row => {
+        const firstDiv = row.querySelector('div:first-child');
+        if (firstDiv) {
+            firstDiv.draggable = true;
+            firstDiv.style.cursor = 'grab';
+
+            firstDiv.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', row.outerHTML);
+                row.style.opacity = '0.5';
+                row.style.transform = 'rotate(2deg)';
+            });
+
+            firstDiv.addEventListener('dragend', (e) => {
+                row.style.opacity = '1';
+                row.style.transform = 'rotate(0deg)';
+            });
+        }
+    });
+
+    container.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        const dragoverRow = e.target.closest('.invoice_company_row_div_class');
+        if (dragoverRow) {
+            const rect = dragoverRow.getBoundingClientRect();
+            const midpoint = rect.top + rect.height / 2;
+
+            if (e.clientY < midpoint) {
+                dragoverRow.style.borderTop = '2px solid #4fc3f7';
+                dragoverRow.style.borderBottom = '';
+            } else {
+                dragoverRow.style.borderTop = '';
+                dragoverRow.style.borderBottom = '2px solid #4fc3f7';
+            }
+        }
+    });
+
+    container.addEventListener('dragleave', (e) => {
+        const rows = container.querySelectorAll('.invoice_company_row_div_class');
+        rows.forEach(row => {
+            row.style.borderTop = '';
+            row.style.borderBottom = '';
+        });
+    });
+
+    container.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const draggedHTML = e.dataTransfer.getData('text/plain');
+        const draggedRow = e.target.closest('.invoice_company_row_div_class');
+
+        if (draggedRow && draggedHTML) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = draggedHTML;
+            const newRow = tempDiv.firstElementChild;
+
+            const rect = draggedRow.getBoundingClientRect();
+            const midpoint = rect.top + rect.height / 2;
+
+            if (e.clientY < midpoint) {
+                draggedRow.parentNode.insertBefore(newRow, draggedRow);
+            } else {
+                draggedRow.parentNode.insertBefore(newRow, draggedRow.nextSibling);
+            }
+
+            draggedRow.remove();
+
+            // Clear border indicators
+            const rows = container.querySelectorAll('.invoice_company_row_div_class');
+            rows.forEach(row => {
+                row.style.borderTop = '';
+                row.style.borderBottom = '';
+            });
+
+            // Re-setup drag and drop for new elements
+            setupDragAndDrop();
+
+            // Re-apply editable functionality
+            if (typeof makeDivContentEditable === 'function') makeDivContentEditable();
+            if (typeof setupDuplicateOptions === 'function') setupDuplicateOptions("duplicate_this_element_class", "invoice_company_row_div_class");
+        }
+    });
+}
