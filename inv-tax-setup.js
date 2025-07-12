@@ -1027,14 +1027,18 @@ const importMultipleSelectedInvCompIndoObjects = () => {
             let value = parseFloat(el.innerText.replace(/,/g, '').replace(/\s/g, ''));
             if (!isNaN(value)) {
                 total += value;
-                // Format the number with commas and update the element's innerText
-                if (value === 0) {
-                    el.innerText = '000';
-                } else {
-                    el.innerText = value.toLocaleString();
+                // Only format if the element is not currently being edited
+                if (!el.matches(':focus')) {
+                    if (value === 0) {
+                        el.innerText = '000';
+                    } else {
+                        el.innerText = value.toLocaleString();
+                    }
                 }
             } else {
-                el.innerText = '000';
+                if (!el.matches(':focus')) {
+                    el.innerText = '000';
+                }
             }
         });
 
@@ -1063,6 +1067,26 @@ const importMultipleSelectedInvCompIndoObjects = () => {
     const numberElements = document.querySelectorAll('.inv_rest_payment_or_deposit_number_p_class');
     numberElements.forEach(el => {
         el.addEventListener('input', updateAutomaticTotalPrice);
+
+        // Format on blur (when user finishes editing)
+        el.addEventListener('blur', () => {
+            let value = parseFloat(el.innerText.replace(/,/g, '').replace(/\s/g, ''));
+            if (!isNaN(value)) {
+                if (value === 0) {
+                    el.innerText = '000';
+                } else {
+                    el.innerText = value.toLocaleString();
+                }
+            } else {
+                el.innerText = '000';
+            }
+        });
+
+        // Handle focus to allow right-to-left typing
+        el.addEventListener('focus', () => {
+            // Don't clear the '000' - let user see it and start typing over it
+            // The cursor will be at the beginning, so typing will naturally replace the content
+        });
     });
 
     // Initial calculation
