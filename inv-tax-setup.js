@@ -184,14 +184,20 @@ function openPdfDownloadBox() {
 
         let pdfName = '';
 
-        if (document.getElementById('current_used_rev_number_p_id').innerText !== '') {
-            // Build PDF name
-            pdfName = `Inv Tax Indonesia VID${document.getElementById('current_used_rev_number_p_id').innerText} For Inv ${allInvNumber}`;
+        // Get the span text inside the invoice_company_guest_name_div_class
+        const spanText = document.querySelector('.invoice_company_guest_name_div_class span')?.innerText || 'VID TRAVEL';
 
+
+
+        // Check if rev number exists
+        if (document.getElementById('current_used_rev_number_p_id').innerText !== '') {
+            // Build PDF name with rev number
+            pdfName = `Inv Tax ${spanText}${document.getElementById('current_used_rev_number_p_id').innerText} Indonesia For Inv ${allInvNumber}`;
         } else {
-            // Build PDF name
-            pdfName = `Inv Tax VID Indonesia For Inv ${allInvNumber}`;
+            // Build PDF name without rev number
+            pdfName = `Inv Tax ${spanText} Indonesia For Inv ${allInvNumber}`;
         }
+
 
         // Set file name
         document.getElementById('pdf_file_name_input_id').value = pdfName;
