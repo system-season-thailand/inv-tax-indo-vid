@@ -188,7 +188,6 @@ function openPdfDownloadBox() {
         const spanText = document.querySelector('.invoice_company_guest_name_div_class span')?.innerText || 'VID TRAVEL';
 
 
-
         // Check if rev number exists
         if (document.getElementById('current_used_rev_number_p_id').innerText !== '') {
             // Build PDF name with rev number
