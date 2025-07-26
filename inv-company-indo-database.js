@@ -41,6 +41,7 @@ const inv_comp_indo_loadAllData = async () => {
 
             const h3 = document.createElement("h3");
             h3.textContent = row.name;
+            h3.setAttribute('data-original-name', row.name);
 
             h3.onclick = function () {
                 inv_comp_indo_importContentForSelectedName(this);
