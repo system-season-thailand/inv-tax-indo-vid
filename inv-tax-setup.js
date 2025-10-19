@@ -1167,12 +1167,18 @@ const importMultipleSelectedInvCompIndoObjects = () => {
 
         // Tax calculation
         let tax = 0;
-        if (total > 7000) {
-            tax = 50;
-        } else if (total >= 4000 && total <= 7000) {
-            tax = 40;
+        if (total >= 10000) {
+            tax = 150;
+        } else if (total >= 8000) {
+            tax = 130;
+        } else if (total >= 6000) {
+            tax = 110;
+        } else if (total >= 4000) {
+            tax = 90;
+        } else if (total >= 2000) {
+            tax = 80;
         } else {
-            tax = 25;
+            tax = 60;
         }
 
         let totalWithTax = total - tax;
