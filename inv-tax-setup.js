@@ -922,6 +922,9 @@ const importMultipleSelectedInvCompIndoObjects = async () => {
         h3.style.backgroundColor === "rgb(0, 155, 0)"
     );
 
+    /* Show the loading before the reading and the rebuilding hold the page still */
+    await showInvImportLoading();
+
     /* The saved content is only read for the names that were really selected */
     const selectedContents = await Promise.all(selectedH3s.map(
         h3 => invCompIndoNamesLoader.fetchContentForName(h3.getAttribute('data-original-name'))
@@ -1170,6 +1173,9 @@ const importMultipleSelectedInvCompIndoObjects = async () => {
     inv_comp_indo_selectionOrder = [];
 
     hideOverlay();
+
+    /* The invoice is fully rebuilt now */
+    hideInvImportLoading();
 };
 
 
