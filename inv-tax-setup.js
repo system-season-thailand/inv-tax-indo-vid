@@ -1183,82 +1183,8 @@ const importMultipleSelectedInvCompIndoObjects = async () => {
         el.innerText = '000';
     });
 
-    // Function to update the total price
-    function updateAutomaticTotalPrice() {
-        const numberElements = document.querySelectorAll('.inv_rest_payment_or_deposit_number_p_class');
-        let total = 0;
-        numberElements.forEach(el => {
-            // Remove commas and spaces, parse as float
-            let value = parseFloat(el.innerText.replace(/,/g, '').replace(/\s/g, ''));
-            if (!isNaN(value)) {
-                total += value;
-                // Only format if the element is not currently being edited
-                if (!el.matches(':focus')) {
-                    if (value === 0) {
-                        el.innerText = '000';
-                    } else {
-                        el.innerText = value.toLocaleString();
-                    }
-                }
-            } else {
-                if (!el.matches(':focus')) {
-                    el.innerText = '000';
-                }
-            }
-        });
-
-        // Tax calculation
-        let tax = 0;
-        if (total >= 10000) {
-            tax = 150;
-        } else if (total >= 8000) {
-            tax = 130;
-        } else if (total >= 6000) {
-            tax = 110;
-        } else if (total >= 4000) {
-            tax = 90;
-        } else if (total >= 2000) {
-            tax = 80;
-        } else {
-            tax = 60;
-        }
-
-        let totalWithTax = total - tax;
-        if (totalWithTax < 0) {
-            totalWithTax = 0;
-        }
-
-        const totalSpan = document.getElementById('aotumaticTotalPriceSpan');
-        if (totalSpan) {
-            totalSpan.textContent = totalWithTax === 0 ? '000' : totalWithTax.toLocaleString();
-        }
-    }
-
     // Attach event listeners to all editable number elements
-    const numberElements = document.querySelectorAll('.inv_rest_payment_or_deposit_number_p_class');
-    numberElements.forEach(el => {
-        el.addEventListener('input', updateAutomaticTotalPrice);
-
-        // Format on blur (when user finishes editing)
-        el.addEventListener('blur', () => {
-            let value = parseFloat(el.innerText.replace(/,/g, '').replace(/\s/g, ''));
-            if (!isNaN(value)) {
-                if (value === 0) {
-                    el.innerText = '000';
-                } else {
-                    el.innerText = value.toLocaleString();
-                }
-            } else {
-                el.innerText = '000';
-            }
-        });
-
-        // Handle focus to allow right-to-left typing
-        el.addEventListener('focus', () => {
-            // Don't clear the '000' - let user see it and start typing over it
-            // The cursor will be at the beginning, so typing will naturally replace the content
-        });
-    });
+    attachInvNumberFormattingAndCalculation();
 
     // Initial calculation
     updateAutomaticTotalPrice();
@@ -1428,12 +1354,18 @@ function updateAutomaticTotalPrice() {
 
     // Tax calculation
     let tax = 0;
-    if (total > 7000) {
-        tax = 50;
-    } else if (total >= 4000 && total <= 7000) {
-        tax = 40;
+    if (total >= 10000) {
+        tax = 150;
+    } else if (total >= 8000) {
+        tax = 130;
+    } else if (total >= 6000) {
+        tax = 110;
+    } else if (total >= 4000) {
+        tax = 90;
+    } else if (total >= 2000) {
+        tax = 80;
     } else {
-        tax = 25;
+        tax = 60;
     }
 
     let totalWithTax = total - tax;
